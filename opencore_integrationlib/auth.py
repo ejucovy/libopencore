@@ -5,13 +5,14 @@ class NotAuthenticated(Exception): # XXX TODO: sublcass a specific exc class
 
 import base64
 import hmac
-import sha
+import os
 from random import SystemRandom
+import sha
 import urllib
 
 def generate_cookie_value(username, shared_secret):
     hash = generate_hash(username, shared_secret)
-    encoded = base64.encodestring("%s\0%s" % (login, hash))
+    encoded = base64.encodestring("%s\0%s" % (username, hash))
     return urllib.quote(encoded.rstrip())
 
 def authenticate_from_cookie(cookie, shared_secret):
