@@ -41,6 +41,11 @@ def get_secret(secret_filename,
             not os.path.exists(secret_filename):
         return set_secret(secret_filename)
 
+    f = open(secret_filename)
+    secret = f.readline().strip()
+    f.close()
+    return secret
+
 def set_secret(secret_filename):
     #this may throw an error if the file cannot be created, but that's OK, because 
     #then users will know to create it themselves
@@ -53,12 +58,6 @@ def set_secret(secret_filename):
     f.write(password)
     f.close()
     return password
-
-    f = open(secret_filename)
-    secret = f.readline().strip()
-    f.close()
-    return secret
-
 
 def authenticate_opencore(cookie):
 
