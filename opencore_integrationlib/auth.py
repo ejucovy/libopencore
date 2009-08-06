@@ -60,3 +60,29 @@ def set_secret(secret_filename):
     return secret
 
 
+class BaseAuther(object):
+    """ subclass this """
+    def authenticate(self, cookie):
+        return authenticate_from_cookie(cookie, self.get_secret_filename())
+    def get_secret_filename(self):
+        raise NotImplementedError
+
+class OpencoreAuther(BaseAuther):
+
+    def get_secret_filename(self):
+
+        from opencore.configuration import utils as conf_utils 
+        import os
+
+        filename = conf_utils.product_config('topp_secret_filename', 'opencore.auth')
+        if filename:
+            return filename
+        return os.path.join(os.environ.get('INSTANCE_HOME'), 'secret.txt')
+
+class TasktrackerAuther(BaseAuther):
+
+    def get_secret_filename(self):
+
+        from pylons import config
+        return config['app_conf']['topp_secret_filename']
+
