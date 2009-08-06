@@ -39,19 +39,24 @@ def get_secret(secret_filename,
 
     if generate_random_on_failure and \
             not os.path.exists(secret_filename):
-        #this may throw an error if the file cannot be created, but that's OK, because 
-        #then users will know to create it themselves
-        f = open(secret_filename, "w")
-        random = SystemRandom()
-        letters = [chr(ord('A') + i) for i in xrange(26)]
-        letters += [chr(ord('a') + i) for i in xrange(26)]
-        letters += map(str, xrange(10))
-        password = "".join([random.choice(letters) for i in xrange(10)])
-        f.write(password)
-        f.close()
-        return password
+        return set_secret(secret_filename)
+
+def set_secret(secret_filename):
+    #this may throw an error if the file cannot be created, but that's OK, because 
+    #then users will know to create it themselves
+    f = open(secret_filename, "w")
+    random = SystemRandom()
+    letters = [chr(ord('A') + i) for i in xrange(26)]
+    letters += [chr(ord('a') + i) for i in xrange(26)]
+    letters += map(str, xrange(10))
+    password = "".join([random.choice(letters) for i in xrange(10)])
+    f.write(password)
+    f.close()
+    return password
 
     f = open(secret_filename)
     secret = f.readline().strip()
     f.close()
     return secret
+
+
