@@ -157,4 +157,6 @@ class RemoteProxy(object):
             remote=remote_uri,
             force_host=True)
 
-        return app(environ, start_response)
+        # work around bug in WSGIFilter
+        environ_copy = environ.copy()
+        return app(environ_copy, start_response)
