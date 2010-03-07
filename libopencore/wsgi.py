@@ -130,7 +130,7 @@ from wsgifilter import proxyapp
 vhm_template = "VirtualHostBase/%(wsgi.url_scheme)s/%(HTTP_HOST)s/openplans/VirtualHostRoot/"
 
 def proxy_factory(global_conf,
-                  remote_uri=None, is_opencore=None
+                  remote_uri=None, is_opencore=None,
                   **local_conf):
     return RemoteProxy(remote_uri, is_opencore)
 
