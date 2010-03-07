@@ -22,6 +22,10 @@ setup(name="libopencore",
           # -*- Extra requirements: -*-
       ],
       entry_points="""
-      # -*- Entry points: -*-
+      [paste.app_factory]
+      proxy = libopencore.wsgi:proxy_factory
+
+      [paste.composite_factory]
+      main = libopencore.wsgi:factory
       """,
       )
