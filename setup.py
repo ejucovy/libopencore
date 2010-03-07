@@ -3,11 +3,12 @@ import sys, os
 
 version = '0.1'
 
+readme = open('README.txt').read()
+
 setup(name="libopencore",
       version=version,
       description="library functions for connecting external apps to/from opencore",
-      long_description="""\
-""",
+      long_description=readme,
       classifiers=[],
       keywords='',
       author='Ethan Jucovy',
