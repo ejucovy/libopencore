@@ -52,15 +52,15 @@ class App(object):
 from deliverance.middleware import FileRuleGetter    
 from libopencore.deliverance_middleware import CustomDeliveranceMiddleware
 
-def make_featurelet(loader, section, theme_uri, rules):
-    app = loader.get_app(section)
-
+def make_featurelet(app, theme_uri, ruleset, app_name):
     app = CustomDeliveranceMiddleware(
         app,
-        FileRuleGetter(deliverance_ruleset),
+        FileRuleGetter(ruleset),
         default_theme=theme_uri)
 
-    tasktracker = App(tasktracker, 'tasktracker')
+    app = App(app, app_name)
+
+    return app
 
 def factory(loader, global_conf, **local_conf):
     default_app = local_conf['opencore']
@@ -74,12 +74,14 @@ def factory(loader, global_conf, **local_conf):
 
     tasktracker = local_conf.get('tasktracker')
     if tasktracker is not None:
-        tasktracker = make_featurelet(loader, tasktracker, theme_uri, deliverance_ruleset)
+        tasktracker = loader.get_app(tasktracker)
+        tasktracker = make_featurelet(tasktracker, theme_uri, deliverance_ruleset, 'tasktracker')
         other_apps.append(('/tasks', tasktracker))
 
     wordpress = local_conf.get('wordpress')
     if wordpress is not None:
-        wordpress = make_featurelet(loader, wordpress, theme_uri, deliverance_ruleset)
+        wordpress = loader.get_app(wordpress)
+        wordpress = make_featurelet(wordpress, theme_uri, deliverance_ruleset, 'wordpress')
         other_apps.append(('/blog', wordpress))
 
     return URLDispatcher(default_app,
