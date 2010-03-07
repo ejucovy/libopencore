@@ -1,1 +1,0 @@
-http://localhost:10001/VirtualHostBase/%(wsgi.url_scheme)s/%(HTTP_HOST)s/openplans/VirtualHostRoot/

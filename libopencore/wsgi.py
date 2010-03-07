@@ -127,31 +127,22 @@ class URLDispatcher(object):
 
 from wsgifilter import proxyapp
 
+vhm_template = "VirtualHostBase/%(wsgi.url_scheme)s/%(HTTP_HOST)s/openplans/VirtualHostRoot/"
+
 def proxy_factory(global_conf,
-                  remote_uri=None, remote_uri_template=None,
+                  remote_uri=None, is_opencore=None
                   **local_conf):
-    return RemoteProxy(remote_uri, remote_uri_template)
+    return RemoteProxy(remote_uri, is_opencore)
 
 class RemoteProxy(object):
-    def __init__(self, remote_uri=None, remote_uri_template=None):
-        if remote_uri:
-            self.template = False
-            self.remote_uri = remote_uri
-        elif remote_uri_template:
-            file = open(remote_uri_template)
-            remote_uri_template = file.read().strip()
-            file.close()
-            self.template = True
-            self.remote_uri_template = remote_uri_template
-        else:
-            raise AssertionError
+    def __init__(self, remote_uri=None, is_opencore=False):
+        self.remote_uri = remote_uri
+        self.is_opencore = is_opencore
 
     def __call__(self, environ, start_response):
-        if self.template:
-            template = self.remote_uri_template
-            remote_uri = template % environ
-        else:
-            remote_uri = self.remote_uri
+        remote_uri = self.remote_uri
+        if self.is_opencore:
+            remote_uri = remote_uri + (vhm_template % environ)
 
         app = proxyapp.ForcedProxy(
             remote=remote_uri,
