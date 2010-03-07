@@ -59,23 +59,3 @@ def set_secret(secret_filename):
     f.close()
     return password
 
-def authenticate_opencore(cookie):
-
-    from opencore.configuration import utils as conf_utils 
-    import os
-
-    filename = conf_utils.product_config('topp_secret_filename', 'opencore.auth')
-    if filename:
-        return filename
-    fn = os.path.join(os.environ.get('INSTANCE_HOME'), 'secret.txt')
-
-    return authenticate_from_cookie(cookie, fn)
-    
-def authenticate_tasktracker(cookie):
-
-    from pylons import config
-    fn = config['app_conf']['topp_secret_filename']
-
-    return authenticate_from_cookie(cookie, fn)
-
-

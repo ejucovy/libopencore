@@ -1,9 +1,9 @@
 from setuptools import setup, find_packages
 import sys, os
 
-version = '0.1dev'
+version = '0.1'
 
-setup(name='opencore_integrationlib',
+setup(name="libopencore",
       version=version,
       description="library functions for connecting external apps to/from opencore",
       long_description="""\
