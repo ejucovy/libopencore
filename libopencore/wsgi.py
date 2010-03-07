@@ -46,6 +46,9 @@ class App(object):
     def __call__(self, environ, start_response):
         return self.app(environ, start_response)
 
+    def __repr__(self):
+        return self.header
+
 from deliverance.middleware import FileRuleGetter    
 from libopencore.deliverance_middleware import CustomDeliveranceMiddleware
 
@@ -58,9 +61,12 @@ def factory(loader, global_conf, **local_conf):
     tasktracker = loader.get_app(tasktracker)
 
     deliverance_ruleset = local_conf['.deliverance_rule_file']
+    theme_uri = local_conf['.theme_uri']
 
-    tasktracker = CustomDeliveranceMiddleware(tasktracker,
-                                              FileRuleGetter(deliverance_ruleset))
+    tasktracker = CustomDeliveranceMiddleware(
+        tasktracker,
+        FileRuleGetter(deliverance_ruleset),
+        default_theme=theme_uri)
 
     tasktracker = App(tasktracker, 'tasktracker')
 
@@ -68,7 +74,8 @@ def factory(loader, global_conf, **local_conf):
     wordpress = loader.get_app(wordpress)
     wordpress = CustomDeliveranceMiddleware(
         wordpress,
-        FileRuleGetter(deliverance_ruleset))
+        FileRuleGetter(deliverance_ruleset),
+        default_theme=theme_uri)
     wordpress = App(wordpress, 'wordpress')
 
     other_apps = [('/tasks', tasktracker),
@@ -119,6 +126,7 @@ class URLDispatcher(object):
         return app_to_dispatch_to(environ, start_response)
 
 from wsgifilter import proxyapp
+
 def proxy_factory(global_conf,
                   remote_uri=None, remote_uri_template=None,
                   **local_conf):
@@ -144,7 +152,9 @@ class RemoteProxy(object):
             remote_uri = template % environ
         else:
             remote_uri = self.remote_uri
+
         app = proxyapp.ForcedProxy(
             remote=remote_uri,
             force_host=True)
+
         return app(environ, start_response)

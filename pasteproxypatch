@@ -1,0 +1,10 @@
+wsgifilter -> proxyapp.py
+
+def __call__
+first line -> environ = environ.copy()
+
+
+pasteproxy:
+        path = '/'.join(
+            (environ.get('SCRIPT_NAME', '').rstrip('/'),
+             environ.get('PATH_INFO', '').lstrip('/')))

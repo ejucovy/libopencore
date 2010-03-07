@@ -1,5 +1,4 @@
 <ruleset>
-  <theme href="/openplans/theme.html" />
   <rule class="default">
     <replace theme="children://div[@id='oc-content-container']"
              content="//div[@id='oc-tasktracker-wrapper']|//div[@id='oc-blog-wrapper']|//body[@id='oc-wp-admin-body']|//div[@class='oc-genericError']" />
