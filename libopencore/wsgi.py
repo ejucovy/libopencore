@@ -114,7 +114,7 @@ class URLDispatcher(object):
             return self.default_app(environ, start_response)
 
         environ['PATH_INFO'], environ['SCRIPT_NAME'] = (
-            new_path_info, new_script_name)
+            new_path_info.lstrip('/'), new_script_name.rstrip('/'))
 
         # XXX TODO: look up what uses this, and, where, and how, and why, 
         #           and what it should look like
