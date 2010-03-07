@@ -1,8 +1,16 @@
+symptom: HTTP_HOST is rewritten after ForcedProxy app is called
+	 which causes Location headers to have the wrong host prefix
+
 wsgifilter -> proxyapp.py
 
 def __call__
 first line -> environ = environ.copy()
 
+-----------
+
+symptom: GET /opencore/tasks/tasklist/show/11 turns into
+             /opencore/tasks/show/11
+         ie, the first component of PATH_INFO is dropped/ignored
 
 pasteproxy:
         path = '/'.join(
