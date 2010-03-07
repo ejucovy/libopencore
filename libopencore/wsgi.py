@@ -52,34 +52,35 @@ class App(object):
 from deliverance.middleware import FileRuleGetter    
 from libopencore.deliverance_middleware import CustomDeliveranceMiddleware
 
-def factory(loader, global_conf, **local_conf):
-    default_app = local_conf['opencore']
-    default_app = loader.get_app(default_app)
-    default_app = App(default_app, '')
+def make_featurelet(loader, section, theme_uri, rules):
+    app = loader.get_app(section)
 
-    tasktracker = local_conf['tasktracker']
-    tasktracker = loader.get_app(tasktracker)
-
-    deliverance_ruleset = local_conf['.deliverance_rule_file']
-    theme_uri = local_conf['.theme_uri']
-
-    tasktracker = CustomDeliveranceMiddleware(
-        tasktracker,
+    app = CustomDeliveranceMiddleware(
+        app,
         FileRuleGetter(deliverance_ruleset),
         default_theme=theme_uri)
 
     tasktracker = App(tasktracker, 'tasktracker')
 
-    wordpress = local_conf['wordpress']
-    wordpress = loader.get_app(wordpress)
-    wordpress = CustomDeliveranceMiddleware(
-        wordpress,
-        FileRuleGetter(deliverance_ruleset),
-        default_theme=theme_uri)
-    wordpress = App(wordpress, 'wordpress')
+def factory(loader, global_conf, **local_conf):
+    default_app = local_conf['opencore']
+    default_app = loader.get_app(default_app)
+    default_app = App(default_app, '')
 
-    other_apps = [('/tasks', tasktracker),
-                  ('/blog', wordpress)]
+    deliverance_ruleset = local_conf['.deliverance_rule_file']
+    theme_uri = local_conf['.theme_uri']
+
+    other_apps = []
+
+    tasktracker = local_conf.get('tasktracker')
+    if tasktracker is not None:
+        tasktracker = make_featurelet(loader, tasktracker, theme_uri, deliverance_ruleset)
+        other_apps.append(('/tasks', tasktracker))
+
+    wordpress = local_conf.get('wordpress')
+    if wordpress is not None:
+        wordpress = make_featurelet(loader, wordpress, theme_uri, deliverance_ruleset)
+        other_apps.append(('/blog', wordpress))
 
     return URLDispatcher(default_app,
                          *other_apps)
