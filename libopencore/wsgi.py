@@ -83,8 +83,8 @@ class URLDispatcher(object):
         to the matching application. So we return a rewritten
         SCRIPT_NAME and PATH_INFO that it can use.
 
-        Returns (matching_app, new_script_name, new_path_info)
-        or (None, script_name, path_info) if no app matches.
+        Returns (matching_app, app_name, new_script_name, new_path_info)
+        or (None, None, script_name, path_info) if no app matches.
         """
         for path in self.apps:
             if path_info == path or path_info.startswith(path+'/'):
