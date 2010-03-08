@@ -19,11 +19,20 @@ setup(name="libopencore",
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-          # -*- Extra requirements: -*-
-      ],
+        ],
+      extras_require={
+        "deliverance": [
+            "Deliverance",
+            "WebOb",
+            "WSGIProxy",
+            ],
+        "proxy": [
+            "WSGIFilter",
+            ],
+        }
       entry_points="""
       [paste.app_factory]
-      proxy = libopencore.wsgi:proxy_factory
+      proxy = libopencore.http_proxy:app_factory
 
       [paste.composite_factory]
       main = libopencore.wsgi:composite_factory
