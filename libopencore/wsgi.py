@@ -51,10 +51,6 @@ def parse_project(environ):
 def composite_factory(loader, global_conf, **local_conf):
     default_app = local_conf['opencore']
     default_app = loader.get_app(default_app)
-    default_app = App(default_app, '')
-
-    deliverance_ruleset = local_conf['.deliverance_rule_file']
-    theme_uri = local_conf['.theme_uri']
 
     other_apps = []
     # items in other_apps are 3-tuples
