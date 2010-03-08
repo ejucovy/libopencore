@@ -34,7 +34,7 @@ libopencore.deliverance_middleware
 libopencore.wsgi
 ================
 
- * factory / URLDispatcher
+ * composite_factory / URLDispatcher
 
    A paste.composite_factory that will dispatch requests to
    opencore and to other applications (tasktracker and wordpress)

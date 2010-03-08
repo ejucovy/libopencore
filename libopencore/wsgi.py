@@ -38,6 +38,7 @@ def parse_project(environ):
         return project, path_info, script_name
     return None, path_info, script_name
 
+# XXX TODO: kill this class
 class App(object):
     def __init__(self, app, header):
         self.app = app
@@ -62,7 +63,7 @@ def make_featurelet(app, theme_uri, ruleset, app_name):
 
     return app
 
-def factory(loader, global_conf, **local_conf):
+def composite_factory(loader, global_conf, **local_conf):
     default_app = local_conf['opencore']
     default_app = loader.get_app(default_app)
     default_app = App(default_app, '')
