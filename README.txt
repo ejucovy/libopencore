@@ -24,12 +24,14 @@ libopencore.auth
 libopencore.deliverance_middleware
 ==================================
 
- * CustomDeliveranceMiddleware
+ * filter_factory / CustomDeliveranceMiddleware
 
    A subclass of Deliverance middleware (v0.3) that carries along
    the original request's HTTP_X_OPENPLANS_*  headers and cookie,
    when making external subrequests. This allows external applications
    to properly respect login and context information.
+
+   It also hard-codes the necessary Deliverance ruleset.
 
 libopencore.wsgi
 ================
