@@ -20,3 +20,33 @@ libopencore.auth
    Throws a BadCookie exception if the cookie is malformed, or a
    NotAuthenticated exception if the cookie is well-formed but not
    using the correct shared secret.
+
+libopencore.deliverance_middleware
+==================================
+
+ * CustomDeliveranceMiddleware
+
+   A subclass of Deliverance middleware (v0.3) that carries along
+   the original request's HTTP_X_OPENPLANS_*  headers and cookie,
+   when making external subrequests. This allows external applications
+   to properly respect login and context information.
+
+libopencore.wsgi
+================
+
+ * factory / URLDispatcher
+
+   A paste.composite_factory that will dispatch requests to
+   opencore and to other applications (tasktracker and wordpress)
+   based on the URL.
+
+   It will add the necessary request headers before making
+   subrequests.
+
+ * proxy_factory / RemoteProxy
+
+   A paste.app_factory that will proxy requests to external HTTP
+   calls.  Pass a ``remote_uri`` with the base href for the app.
+
+   If ``is_opencore`` is set, it will rewrite the request to tell
+   Zope's VirtualHostMonster how to rewrite links.
