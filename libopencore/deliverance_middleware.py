@@ -11,6 +11,21 @@ class CustomDeliveranceMiddleware(DeliveranceMiddleware):
     customizes the subrequest handler to copy the original request
     regardless of whether the subrequest url is within deliverance's
     url-space
+
+    this is necessary to preserve the special headers
+     * HTTP_X_OPENPLANS_PROJECT: tells the downstream app what project
+       context the request is for
+
+     * HTTP_X_OPENPLANS_APPLICATION: tells the downstream app what app
+       the request came in for (eg, a request to /projects/foo/tasks/
+       will maintain X-Openplans-Application: tasktracker through all
+       internal subrequests, even if there's an internal request to, say,
+       wordpress for the latest blog posts related to the task[*])
+
+       [*] we don't do this but it would be kinda cool, wouldn't it?
+
+     * HTTP_COOKIE: we need to send this along in the subrequests,
+       so that users can remain logged in when they visit tasktracker etc.
     """
 
     def get_resource(self, url, orig_req, log, dummy):
