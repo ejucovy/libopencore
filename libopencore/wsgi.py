@@ -17,8 +17,18 @@ _project_regex = re.compile(r'/projects/+([^/]+)')
 
 def parse_project(environ):
     """
-    For the main site, find the project name and put the
-    /projects/PROJECTNAME portion of the path onto SCRIPT_NAME
+    Given a request environ, find the project context of the request,
+    if there is one, using a simple regex match.
+
+    If a project context was found, we should tell the caller how it
+    can rewrite SCRIPT_NAME and PATH_INFO to make URLs look like they
+    are not relative to a project. So in addition to returning the
+    project name, we'll return a rewritten script_name and path_info
+    that can be used to modify the environment. (Note we don't touch
+    the passed-in environ itself.)
+
+    Returns (project_name, script_name, path_info) 
+    or (None, script_name, path_info) if no project was found.
     """
     path_info = environ.get('PATH_INFO', '')
     script_name = environ.get('SCRIPT_NAME', '')
@@ -35,8 +45,8 @@ def parse_project(environ):
         #        headers=[('Location', new_url)])
 
         path_info = '/' + path_info[match.end():].lstrip('/')
-        return project, path_info, script_name
-    return None, path_info, script_name
+        return project, script_name, path_info
+    return None, script_name, path_info
 
 # XXX TODO: kill this class
 class App(object):
@@ -106,8 +116,10 @@ class URLDispatcher(object):
             self.apps[path] = app
 
     def __call__(self, environ, start_response):
-        project, new_path_info, new_script_name = parse_project(environ)
+        project, new_script_name, new_path_info = parse_project(environ)
         if not project:
+            # we are not in a project context, so we'll just let the
+            # default app (opencore) deal with the request.
             return self.default_app(environ, start_response)
 
         add_request_header('HTTP_X_OPENPLANS_PROJECT', project, environ)
