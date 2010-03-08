@@ -29,7 +29,7 @@ setup(name="libopencore",
         "proxy": [
             "WSGIFilter",
             ],
-        }
+        },
       entry_points="""
       [paste.app_factory]
       proxy = libopencore.http_proxy:app_factory
