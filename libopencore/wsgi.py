@@ -91,9 +91,9 @@ class URLDispatcher(object):
                 script_name += path
                 path_info = path_info[len(path):]
                 assert not path_info or path_info.startswith('/')
-                return (self.apps[path], script_name, path_info)
+                return tuple(self.apps[path]) + (script_name, path_info)
 
-        return (None, script_name, path_info)
+        return (None, None, script_name, path_info)
 
     def __init__(self, default_app, *apps):
         self.default_app = default_app
