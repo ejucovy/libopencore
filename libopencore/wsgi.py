@@ -99,15 +99,27 @@ def composite_factory(loader, global_conf, **local_conf):
                          *other_apps)
 
 class URLDispatcher(object):
-    def match_path_info(self, path_info, script_name):
+    def match_path_info(self, script_name, path_info):
+        """
+        Determines if the given URL matches one of the apps
+        registered with the dispatcher.
+
+        If there is a match, the caller will want to modify
+        SCRIPT_NAME and PATH_INFO before passing the request
+        to the matching application. So we return a rewritten
+        SCRIPT_NAME and PATH_INFO that it can use.
+
+        Returns (matching_app, new_script_name, new_path_info)
+        or (None, script_name, path_info) if no app matches.
+        """
         for path in self.apps:
             if path_info == path or path_info.startswith(path+'/'):
                 script_name += path
                 path_info = path_info[len(path):]
                 assert not path_info or path_info.startswith('/')
-                return (self.apps[path], path_info, script_name)
+                return (self.apps[path], script_name, path_info)
 
-        return (False, path_info, script_name)
+        return (None, script_name, path_info)
 
     def __init__(self, default_app, *apps):
         self.default_app = default_app
@@ -124,8 +136,8 @@ class URLDispatcher(object):
 
         add_request_header('HTTP_X_OPENPLANS_PROJECT', project, environ)
 
-        app_to_dispatch_to, new_path_info, new_script_name = \
-            self.match_path_info(new_path_info, new_script_name)
+        app_to_dispatch_to, new_script_name, new_path_info = \
+            self.match_path_info(new_script_name, new_path_info)
         if not app_to_dispatch_to:
             return self.default_app(environ, start_response)
 
