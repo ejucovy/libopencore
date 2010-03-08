@@ -60,9 +60,6 @@ class App(object):
     def __repr__(self):
         return self.header
 
-from deliverance.middleware import FileRuleGetter    
-from libopencore.deliverance_middleware import CustomDeliveranceMiddleware
-
 def make_featurelet(app, theme_uri, ruleset, app_name):
     app = CustomDeliveranceMiddleware(
         app,
@@ -72,6 +69,7 @@ def make_featurelet(app, theme_uri, ruleset, app_name):
     app = App(app, app_name)
 
     return app
+
 
 def composite_factory(loader, global_conf, **local_conf):
     default_app = local_conf['opencore']

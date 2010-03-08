@@ -75,3 +75,10 @@ class CustomDeliveranceMiddleware(DeliveranceMiddleware):
                       url, subresp.status, subresp.content_type)
             return subresp
 
+from deliverance.middleware import FileRuleGetter    
+def filter_factory(global_conf, rule_file=None, theme_uri=None, **local_conf):
+    def filter(app):
+        return CustomDeliveranceMiddleware(
+            app, FileRuleGetter(rule_file),
+            default_theme=theme_uri)
+    return filter

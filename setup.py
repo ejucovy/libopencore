@@ -26,6 +26,9 @@ setup(name="libopencore",
       proxy = libopencore.wsgi:proxy_factory
 
       [paste.composite_factory]
-      main = libopencore.wsgi:factory
+      main = libopencore.wsgi:composite_factory
+
+      [paste.filter_factory]
+      deliverance = libopencore.deliverance_middleware:filter_factory
       """,
       )
