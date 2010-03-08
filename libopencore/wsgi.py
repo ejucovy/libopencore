@@ -48,29 +48,6 @@ def parse_project(environ):
         return project, script_name, path_info
     return None, script_name, path_info
 
-# XXX TODO: kill this class
-class App(object):
-    def __init__(self, app, header):
-        self.app = app
-        self.header = header
-
-    def __call__(self, environ, start_response):
-        return self.app(environ, start_response)
-
-    def __repr__(self):
-        return self.header
-
-def make_featurelet(app, theme_uri, ruleset, app_name):
-    app = CustomDeliveranceMiddleware(
-        app,
-        FileRuleGetter(ruleset),
-        default_theme=theme_uri)
-
-    app = App(app, app_name)
-
-    return app
-
-
 def composite_factory(loader, global_conf, **local_conf):
     default_app = local_conf['opencore']
     default_app = loader.get_app(default_app)
@@ -80,18 +57,21 @@ def composite_factory(loader, global_conf, **local_conf):
     theme_uri = local_conf['.theme_uri']
 
     other_apps = []
-
+    # items in other_apps are 3-tuples
+    #   ('/subpath', wsgi_app, 'app_name_for_x_openplans_application_header')
+    #
+    # these are hardcoded in this composite_factory, because there's
+    # no advantage to exposing it for configuration -- it'll just break
+    # all of opencore's assumptions.
     tasktracker = local_conf.get('tasktracker')
     if tasktracker is not None:
         tasktracker = loader.get_app(tasktracker)
-        tasktracker = make_featurelet(tasktracker, theme_uri, deliverance_ruleset, 'tasktracker')
-        other_apps.append(('/tasks', tasktracker))
+        other_apps.append(('/tasks', tasktracker, 'tasktracker'))
 
     wordpress = local_conf.get('wordpress')
     if wordpress is not None:
         wordpress = loader.get_app(wordpress)
-        wordpress = make_featurelet(wordpress, theme_uri, deliverance_ruleset, 'wordpress')
-        other_apps.append(('/blog', wordpress))
+        other_apps.append(('/blog', wordpress, 'wordpress'))
 
     return URLDispatcher(default_app,
                          *other_apps)
@@ -122,8 +102,8 @@ class URLDispatcher(object):
     def __init__(self, default_app, *apps):
         self.default_app = default_app
         self.apps = {}
-        for path, app in apps:
-            self.apps[path] = app
+        for path, app, app_name in apps:
+            self.apps[path] = (app, app_name)
 
     def __call__(self, environ, start_response):
         project, new_script_name, new_path_info = parse_project(environ)
@@ -134,7 +114,7 @@ class URLDispatcher(object):
 
         add_request_header('HTTP_X_OPENPLANS_PROJECT', project, environ)
 
-        app_to_dispatch_to, new_script_name, new_path_info = \
+        app_to_dispatch_to, app_name, new_script_name, new_path_info = \
             self.match_path_info(new_script_name, new_path_info)
         if not app_to_dispatch_to:
             return self.default_app(environ, start_response)
@@ -146,8 +126,7 @@ class URLDispatcher(object):
         #           and what it should look like
         if not environ.has_key('HTTP_X_OPENPLANS_APPLICATION'):
             add_request_header('HTTP_X_OPENPLANS_APPLICATION',
-                               app_to_dispatch_to.header,
-                               environ)
+                               app_name, environ)
 
         return app_to_dispatch_to(environ, start_response)
 
