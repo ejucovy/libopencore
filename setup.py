@@ -25,6 +25,7 @@ setup(name="libopencore",
             "Deliverance",
             "WebOb",
             "WSGIProxy",
+            "setuptools",
             ],
         "proxy": [
             "WSGIFilter",

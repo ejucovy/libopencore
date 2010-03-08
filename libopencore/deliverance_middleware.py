@@ -90,8 +90,13 @@ class CustomDeliveranceMiddleware(DeliveranceMiddleware):
                       url, subresp.status, subresp.content_type)
             return subresp
 
-from deliverance.middleware import FileRuleGetter    
-def filter_factory(global_conf, rule_file=None, theme_uri=None, **local_conf):
+from deliverance.middleware import FileRuleGetter
+from pkg_resources import resource_filename
+import os
+def filter_factory(global_conf, theme_uri=None, **local_conf):
+    rule_file = resource_filename('libopencore', 'deliverance.xml')
+    assert os.path.exists(rule_file) and os.path.isfile(rule_file)
+
     def filter(app):
         return CustomDeliveranceMiddleware(
             app, FileRuleGetter(rule_file),
