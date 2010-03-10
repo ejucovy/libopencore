@@ -31,7 +31,12 @@ libopencore.deliverance_middleware
    when making external subrequests. This allows external applications
    to properly respect login and context information.
 
-   It also hard-codes the necessary Deliverance ruleset.
+   It also hard-codes the necessary Deliverance ruleset, and theme uri.
+
+   The theme is served by opencore itself, at a @@theme.html view registered
+   on the portal. Here, it is fetched by making an external request to the
+   front of the OpenCore stack, to guarantee that links in the theme are
+   correct.
 
 libopencore.wsgi
 ================
@@ -45,10 +50,13 @@ libopencore.wsgi
    It will add the necessary request headers before making
    subrequests.
 
- * proxy_factory / RemoteProxy
+libopencore.http_proxy
+======================
+
+ * app_factory / RemoteProxy
 
    A paste.app_factory that will proxy requests to external HTTP
    calls.  Pass a ``remote_uri`` with the base href for the app.
 
    If ``is_opencore`` is set, it will rewrite the request to tell
-   Zope's VirtualHostMonster how to rewrite links.
+   Zope's VirtualHostMonster how links in the response should look.
