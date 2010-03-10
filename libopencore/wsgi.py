@@ -102,6 +102,7 @@ class URLDispatcher(object):
             self.apps[path] = (app, app_name)
 
     def __call__(self, environ, start_response):
+
         project, new_script_name, new_path_info = parse_project(environ)
         if not project:
             # we are not in a project context, so we'll just let the
