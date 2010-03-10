@@ -7,7 +7,7 @@ readme = open('README.txt').read()
 
 setup(name="libopencore",
       version=version,
-      description="library functions for connecting external apps to/from opencore",
+      description="a library of functions for connecting external apps to/from opencore",
       long_description=readme,
       classifiers=[],
       keywords='',
