@@ -1,0 +1,13 @@
+0.2
+===
+
+Added deliverance_middleware, wsgi, and http_proxy modules.
+
+Added a sample paste.ini file showing how to combine these into a frontend app
+that proxies to opencore, tasktracker and wordpress, and themes the responses
+with deliverance when necessary.
+
+0.1
+===
+
+Initial release.  Added auth module.
