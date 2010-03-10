@@ -9,7 +9,7 @@ def app_factory(global_conf,
 
 class RemoteProxy(object):
     def __init__(self, remote_uri=None, is_opencore=False):
-        self.remote_uri = remote_uri
+        self.remote_uri = remote_uri.rstrip('/') + '/' # make sure there's a trailing slash
         self.is_opencore = is_opencore
 
     def __call__(self, environ, start_response):
