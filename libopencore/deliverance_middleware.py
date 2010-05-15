@@ -154,6 +154,15 @@ class CustomDeliveranceMiddleware(DeliveranceMiddleware):
             subreq.environ['HTTP_X_OPENPLANS_APPLICATION'] = orig_req.environ.get('HTTP_X_OPENPLANS_APPLICATION')
             subreq.environ['HTTP_X_OPENPLANS_PROJECT'] = orig_req.environ.get('HTTP_X_OPENPLANS_PROJECT')
 
+
+            # there's an bug deeper in the stack which causes a link /foo/my.domain.com/bar/ 
+            # to be rewritten as /foo/my.domain.com:80/bar/ if HTTP_HOST is my.domain.com:80
+            # so i'll just hack around it for now
+            
+            # XXX FIXME: track down the bug!
+            if subreq.environ['HTTP_HOST'].endswith(":80"):
+                subreq.environ['HTTP_HOST'] = subreq.environ["HTTP_HOST"][:-3]
+
             subresp = subreq.get_response(proxy_exact_request)
             log.debug(self, 'External request for %s: %s content-type: %s',
                       url, subresp.status, subresp.content_type)
