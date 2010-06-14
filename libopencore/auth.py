@@ -59,3 +59,18 @@ def set_secret(secret_filename):
     f.close()
     return password
 
+from Cookie import BaseCookie
+
+def get_user(request, secret_filename):
+    """
+    Can raise IOError (in secret=, if secret_filename is not configured right)
+    Can raise KeyError (in morsel=, if no cookie)
+    Can raise BadCookie or NotAuthenticated
+    """
+    secret = get_secret(secret_filename)
+    morsel = BaseCookie(request.environ['HTTP_COOKIE'])['__ac']
+    username, hash = authenticate_from_cookie(morsel.value, secret)
+    return username
+
+def get_admin_info(admin_file):
+    return file(admin_file).read().strip().split(":")
