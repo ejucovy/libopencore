@@ -33,10 +33,13 @@ class RemoteProxy(object):
                 environ_copy['frontend_port'] = '80'
             remote_uri = remote_uri + (vhm_template % environ_copy)
 
+        environ['HTTP_X_OPENPLANS_DOMAIN'] = environ['HTTP_HOST'].split(':')[0]
+
         app = proxyapp.ForcedProxy(
             remote=remote_uri,
             force_host=True)
 
         # work around bug in WSGIFilter
         environ_copy = environ.copy()
+
         return app(environ_copy, start_response)

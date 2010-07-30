@@ -153,7 +153,7 @@ class CustomDeliveranceMiddleware(DeliveranceMiddleware):
             subreq.environ['HTTP_COOKIE'] = orig_req.environ.get('HTTP_COOKIE')
             subreq.environ['HTTP_X_OPENPLANS_APPLICATION'] = orig_req.environ.get('HTTP_X_OPENPLANS_APPLICATION')
             subreq.environ['HTTP_X_OPENPLANS_PROJECT'] = orig_req.environ.get('HTTP_X_OPENPLANS_PROJECT')
-
+            subreq.environ['HTTP_X_OPENPLANS_DOMAIN'] = orig_req.environ.get('HTTP_X_OPENPLANS_DOMAIN')
 
             # there's an bug deeper in the stack which causes a link /foo/my.domain.com/bar/ 
             # to be rewritten as /foo/my.domain.com:80/bar/ if HTTP_HOST is my.domain.com:80

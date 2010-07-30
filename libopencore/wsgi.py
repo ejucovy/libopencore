@@ -116,8 +116,21 @@ class URLDispatcher(object):
         if not app_to_dispatch_to:
             return self.default_app(environ, start_response)
 
+        # this is pretty hideous but i don't have time to find the source
+        # of the bug.  if wordpress receives a PATH_INFO without a leading
+        # slash it constructs URLs missing that slash like /myproject/blogwpadmin.php
+        # but if tasktracker receives a PATH_INFO *with* a leading slash,
+        # it loses all the controller routing information from PATH_INFO internally
+        # so a URL like /myproject/tasks/tasklist/show_create is treated as if 
+        # it were /myproject/tasks/show_create and results in a 404.
+        new_path_info = new_path_info.lstrip('/')
+        if app_name != "tasktracker" and new_path_info:
+            new_path_info = "/%s" % new_path_info
+
+        new_script_name = new_script_name.rstrip('/')
+
         environ['PATH_INFO'], environ['SCRIPT_NAME'] = (
-            new_path_info.lstrip('/'), new_script_name.rstrip('/'))
+            new_path_info, new_script_name)
 
         # XXX TODO: look up what uses this, and, where, and how, and why, 
         #           and what it should look like
