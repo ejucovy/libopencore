@@ -32,6 +32,10 @@ setup(name="libopencore",
         "proxy": [
             "WSGIFilter",
             ],
+        "twirlip": [
+            "eyvind",
+            "signedheaders",
+            ]
         },
       entry_points="""
       [paste.app_factory]
