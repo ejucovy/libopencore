@@ -35,6 +35,7 @@ setup(name="libopencore",
         "twirlip": [
             "eyvind",
             "signedheaders",
+            "transcluder",
             ]
         },
       entry_points="""
@@ -46,5 +47,6 @@ setup(name="libopencore",
 
       [paste.filter_factory]
       deliverance = libopencore.deliverance_middleware:filter_factory
+      transcluder = libopencore.transcluder_middleware:create_transcluder
       """,
       )
