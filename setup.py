@@ -1,14 +1,24 @@
 from setuptools import setup, find_packages
 import sys, os
 
-version = '0.2'
+version = '0.3'
 
 readme = open('README.txt').read()
+changes = open("CHANGES.txt").read()
+
+description = """
+%s
+
+Changes
+=======
+
+%s""" % (readme, changes)
+
 
 setup(name="libopencore",
       version=version,
       description="a library of functions for connecting external apps to/from opencore",
-      long_description=readme,
+      long_description=description,
       classifiers=[],
       keywords='',
       author='Ethan Jucovy',
