@@ -1,6 +1,20 @@
 0.3
 ===
 
+Bugs fixed
+----------
+
+* Work around a bug deeper in the stack which causes links in the
+  response HTML like /foo/my.domain.com/bar/ to be rewritten as
+  /foo/my.domain.com:80/bar/ if HTTP_HOST is my.domain.com:80
+
+* Previously some proxied WordPress URLs were incorrect and resulting
+  in 404s.  This is now fixed.
+
+
+Features added
+--------------
+
 Added transcluder_middleware module and a `libopencore#transcluder` entry point
 for a paste.filter_factory.
 
@@ -12,6 +26,26 @@ subrequests instead of HTTP calls, and calls its inner app.  So if you
 have routing, security or anything else important outside Transcluder,
 you may get strange results.
 
+Added support for proxying to a Twirlip server. Twirlip must be
+mounted on /notifications by a regular paste#urlmap (where / is then
+mapped to the main libopencore composite app) and it must be wrapped
+by transcluder middleware.
+
+To use the Twirlip proxy, install libopencore's `twirlip` extra
+requirements (listed in extras_require in setup.py).
+
+To use the Twirlip proxy, use a libopencore#proxy app with the setting
+`is_twirlip=true` and a setting `topp_secret_filename` that points to
+the absolute path of the shared secret used for authentication.  Your
+Twirlip proxy will be wrapped in Eyvind middleware which converts
+REMOTE_USER into a special HTTP header signed with the shared secret,
+which is then decoded by the Twirlip server.
+
+Twirlip and Transcluder are currently used in an OpenCore stack to
+provide subscription-based email notifications for wikipage edits and
+changes to tasks. But don't try to use these unless you absolutely
+need to -- I'm going to  replace Twirlip with something simpler before
+long.
 
 0.2
 ===
