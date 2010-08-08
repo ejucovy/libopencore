@@ -60,3 +60,4 @@ libopencore.http_proxy
 
    If ``is_opencore`` is set, it will rewrite the request to tell
    Zope's VirtualHostMonster how links in the response should look.
+

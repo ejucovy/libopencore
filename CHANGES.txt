@@ -1,3 +1,18 @@
+0.3
+===
+
+Added transcluder_middleware module and a `libopencore#transcluder` entry point
+for a paste.filter_factory.
+
+If using transcluder middleware, Transcluder must be installed.
+
+If using transcluder middleware, it should be the outermost wsgi filter
+in your stack. This is because Transcluder sometimes makes internal WSGI
+subrequests instead of HTTP calls, and calls its inner app.  So if you
+have routing, security or anything else important outside Transcluder,
+you may get strange results.
+
+
 0.2
 ===
 
