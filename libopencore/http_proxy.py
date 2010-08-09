@@ -4,10 +4,14 @@ vhm_template = "VirtualHostBase/%(wsgi.url_scheme)s/%(HTTP_HOST)s:%(frontend_por
 
 def app_factory(global_conf,
                 remote_uri=None,
-                is_opencore=None,
+                is_opencore=False,
                 is_twirlip=None,
                 **local_conf):
-    app = RemoteProxy(remote_uri, is_opencore)
+    assert remote_uri is not None
+    remote_uris = [i.strip() for i in remote_uri.split()
+                   if i.strip()]
+    
+    app = RemoteProxy(remote_uris, is_opencore)
     if is_twirlip is None:
         return app
     # if we're proxying to twirlip we need to wrap this in
@@ -27,14 +31,27 @@ class fixer(object):
         environ['PATH_INFO'] = p
         return self.app(environ, start_response)
 
+from random import randint
 class RemoteProxy(object):
-    def __init__(self, remote_uri=None, 
-                 is_opencore=False):
-        self.remote_uri = remote_uri.rstrip('/') + '/' # make sure there's a trailing slash
+    def __init__(self, remote_uris=None, is_opencore=False):
+        remote_uris = remote_uris or []
+
+        # make sure there's a trailing slash
+        self.remote_uris = [
+            remote_uri.rstrip('/') + '/' 
+            for remote_uri in remote_uris
+            ]
+        
         self.is_opencore = is_opencore
 
+    def pick_remote_uri(self):
+        i = randint(0, len(self.remote_uris)-1)
+        return self.remote_uris[i]
+
+
     def __call__(self, environ, start_response):
-        remote_uri = self.remote_uri
+        remote_uri = self.pick_remote_uri()
+
         if self.is_opencore:
             environ_copy = environ.copy()
 
