@@ -6,12 +6,13 @@ def app_factory(global_conf,
                 remote_uri=None,
                 is_opencore=False,
                 is_twirlip=None,
+                robots_uri=None,
                 **local_conf):
     assert remote_uri is not None
     remote_uris = [i.strip() for i in remote_uri.split()
                    if i.strip()]
     
-    app = RemoteProxy(remote_uris, is_opencore)
+    app = RemoteProxy(remote_uris, is_opencore, robots_uri=robots_uri)
     if is_twirlip is None:
         return app
     # if we're proxying to twirlip we need to wrap this in
@@ -33,7 +34,7 @@ class fixer(object):
 
 from random import randint
 class RemoteProxy(object):
-    def __init__(self, remote_uris=None, is_opencore=False):
+    def __init__(self, remote_uris=None, is_opencore=False, robots_uri=None):
         remote_uris = remote_uris or []
 
         # make sure there's a trailing slash
@@ -44,13 +45,34 @@ class RemoteProxy(object):
         
         self.is_opencore = is_opencore
 
-    def pick_remote_uri(self):
+        if robots_uri is not None:
+            robots_uri = robots_uri.rstrip('/') + '/'
+        self.robots_uri = robots_uri
+
+    robots = ["http://www.exabot.com/go/robot",
+              "http://search.msn.com/msnbot.htm",
+              "http://www.google.com/bot.html",
+              "http://about.ask.com/en/docs/about/webmasters.shtml",
+              ]
+
+    def test_robots(self, agent):
+        agent = agent.lower()
+        for robot in self.robots:
+            if robot in agent:
+                return True
+        return False
+
+    def pick_remote_uri(self, environ):
+        if self.robots_uri is not None:
+            if environ.has_key("HTTP_USER_AGENT"):                
+                agent = environ['HTTP_USER_AGENT']
+                if self.test_robots(agent):
+                    return self.robots_uri
         i = randint(0, len(self.remote_uris)-1)
         return self.remote_uris[i]
 
-
     def __call__(self, environ, start_response):
-        remote_uri = self.pick_remote_uri()
+        remote_uri = self.pick_remote_uri(environ)
 
         if self.is_opencore:
             environ_copy = environ.copy()

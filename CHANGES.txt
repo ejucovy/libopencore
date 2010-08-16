@@ -1,3 +1,16 @@
+0.5
+===
+
+The http proxy's load-balancer is now capable of sending robots 
+to a specific backend.
+
+To use it for a given backend, pass in a URL for ``robots_uri``
+and this URL will be chosen if the request's User-Agent string
+matches a set of known robots.
+
+To segregate robots from all other users, this URL could be
+omitted from the ``remote_uri`` parameter.
+
 0.4
 ===
 
