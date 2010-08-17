@@ -1,15 +1,30 @@
 0.5
 ===
 
-The http proxy's load-balancer is now capable of sending robots 
-to a specific backend.
+Features added
+--------------
 
-To use it for a given backend, pass in a URL for ``robots_uri``
-and this URL will be chosen if the request's User-Agent string
-matches a set of known robots.
+* The http proxy's load-balancer is now capable of sending robots 
+  to a specific backend.
 
-To segregate robots from all other users, this URL could be
-omitted from the ``remote_uri`` parameter.
+  To use it for a given backend, pass in a URL for ``robots_uri``
+  and this URL will be chosen if the request's User-Agent string
+  matches a set of known robots.
+
+  To segregate robots from all other users, this URL could be
+  omitted from the ``remote_uri`` parameter.
+
+Bugs Fixed
+----------
+
+* URLs to the root of a non-Zope opencore component must have a
+  trailing slash; if they don't, a permanent redirect is issued
+  to the correct URL.  (So /projects/foo/blog -> /projects/foo/blog/)
+  The specific symptom I noticed was the link to "Write a new post"
+  on the front page of a project's blog (when logged in as a project
+  admin, when no posts have been made yet) was incorrectly missing the
+  /blog/ component of the URL.  This behavior previously existed 
+  somewhere in DeliveranceVHoster.
 
 0.4
 ===

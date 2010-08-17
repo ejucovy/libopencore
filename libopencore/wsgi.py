@@ -72,6 +72,11 @@ def composite_factory(loader, global_conf, **local_conf):
     return URLDispatcher(default_app,
                          *other_apps)
 
+class AddTrailingSlash(Exception):
+    pass
+
+from webob.exc import HTTPMovedPermanently
+
 class URLDispatcher(object):
     def match_path_info(self, script_name, path_info):
         """
@@ -91,6 +96,12 @@ class URLDispatcher(object):
                 script_name += path
                 path_info = path_info[len(path):]
                 assert not path_info or path_info.startswith('/')
+
+                # make sure we issue a redirect for urls like 
+                # /tasks -> /tasks/ or /blog -> /blog/
+                if not path_info:
+                    raise AddTrailingSlash
+
                 return tuple(self.apps[path]) + (script_name, path_info)
 
         return (None, None, script_name, path_info)
@@ -111,8 +122,13 @@ class URLDispatcher(object):
 
         add_request_header('HTTP_X_OPENPLANS_PROJECT', project, environ)
 
-        app_to_dispatch_to, app_name, new_script_name, new_path_info = \
-            self.match_path_info(new_script_name, new_path_info)
+        try:
+            app_to_dispatch_to, app_name, new_script_name, new_path_info = \
+                self.match_path_info(new_script_name, new_path_info)
+        except AddTrailingSlash:
+            return HTTPMovedPermanently(location=environ['PATH_INFO']+'/')(
+                environ, start_response)
+
         if not app_to_dispatch_to:
             return self.default_app(environ, start_response)
 
