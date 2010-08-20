@@ -34,7 +34,7 @@ setup(name="libopencore",
         ],
       extras_require={
         "deliverance": [
-            "Deliverance",
+            "Deliverance>=0.4",
             "WebOb",
             "WSGIProxy",
             "setuptools",
