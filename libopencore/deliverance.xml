@@ -1,10 +1,12 @@
 <ruleset>
   <rule class="default">
     <replace theme="children://div[@id='oc-content-container']"
-             content="//div[@id='oc-tasktracker-wrapper']|//div[@id='oc-blog-wrapper']|//body[@id='oc-wp-admin-body']|//div[@class='oc-genericError']" />
+             content="//div[@id='oc-tasktracker-wrapper']|//div[@id='oc-blog-wrapper']|//body[@id='oc-wp-admin-body']|//div[@class='oc-genericError']"
+	     collapse-sources="1"
+	     />
     <replace theme="children://div[@id='oc-topnav-wrapper']" content="//body/*" href="/openplans/oc-topnav" notheme="ignore" />
     <replace theme="children://div[@id='oc-footer-wrapper']" content="//body/*" href="/openplans/oc-footer" notheme="ignore" />
-    <append theme="children:head" content="script, link" href="/openplans/xinha-config" nocontent="ignore" />
+    <replace theme="div.opencore_wysiwyg" content="script,link" href="/openplans/xinha-config" notheme="ignore" />
   </rule>
 
 </ruleset>
