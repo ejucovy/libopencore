@@ -26,6 +26,11 @@ Bugs Fixed
   /blog/ component of the URL.  This behavior previously existed 
   somewhere in DeliveranceVHoster.
 
+* Responses to Ajax requests (X-Requested-With: XMLHttpRequest) are
+  not themed by Deliverance even if they have Content-Type: text/html.
+  This fixes the behavior of TaskTracker's Ajax requests to post new
+  comments on a task. Requires Deliverance 0.4 or greater.
+
 0.4
 ===
 

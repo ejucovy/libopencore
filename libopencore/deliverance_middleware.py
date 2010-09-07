@@ -46,6 +46,12 @@ class CustomDeliveranceMiddleware(DeliveranceMiddleware):
         """
         return self._default_theme % environ
 
+    def notheme_request(self, req):
+        if DeliveranceMiddleware.notheme_request(self, req):
+            return True
+        if req.headers.get("X-Requested-With") == "XMLHttpRequest":
+            return True
+        
     def build_external_subrequest(self, url, orig_req, log):
         """
         We need to carry through certain headers into external 
