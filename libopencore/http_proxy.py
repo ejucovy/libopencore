@@ -54,6 +54,8 @@ class RemoteProxy(object):
               "http://www.google.com/bot.html",
               "http://about.ask.com/en/docs/about/webmasters.shtml",
               "http://yandex.com/bots",
+              "http://help.yahoo.com/help/us/ysearch/slurp",
+              "http://www.baidu.com/search/spider.htm",
               ]
 
     def test_robots(self, agent):
