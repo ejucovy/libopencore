@@ -14,6 +14,10 @@ Features added
   To segregate robots from all other users, this URL could be
   omitted from the ``remote_uri`` parameter.
 
+* The deliverance.xml rules now try to fetch `/openplans/xinha-config`
+  if there is a `<div class="opencore_wysiwyg">` present in the page.
+  This is used to apply a consistent Xinha editor to Wordpress pages.
+
 Bugs Fixed
 ----------
 
@@ -29,8 +33,12 @@ Bugs Fixed
 * Responses to Ajax requests (X-Requested-With: XMLHttpRequest) are
   not themed by Deliverance even if they have Content-Type: text/html.
   This fixes the behavior of TaskTracker's Ajax requests to post new
-  comments on a task. Requires Deliverance 0.4 or greater.
+  comments on a task.
 
+* The deliverance.xml rules no longer try to fetch `/openplans/oc-footer`
+  or `/openplans/oc-header`; these have been unused for ages, so there's
+  no need to make the extra subrequests to Zope.
+  
 0.4
 ===
 
