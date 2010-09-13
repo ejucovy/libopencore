@@ -41,8 +41,8 @@ of URLs as ``remote_uri``instead of a single URL.  Assuming you
 have identical applications listening at each URL, proxied
 requests will be distributed across those URLs.
 
-(The intended use is for multiple Zope servers talking to the
-same ZEO client, though I guess it could also work for any of
+(The intended use is for multiple Zope instances talking to the
+same ZEO server, though I guess it could also work for any of
 the other applications if there was a reason.)
 
 0.3
